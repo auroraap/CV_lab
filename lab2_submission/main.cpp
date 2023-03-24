@@ -37,11 +37,16 @@ int main(int argc, char** argv)
     
     // ---------- TASK 2 ----------
     // Run the implemented min and max filters: Kernel size 5 is ok
-    cv::Mat filtered_image = grayscale_img;
-    filtered_image = max_filter(grayscale_img, kernel_size);
-    cv::imwrite("results/image_max.jpg", filtered_image);
-    filtered_image = min_filter(filtered_image, kernel_size);
-    cv::imwrite("results/image_max_min.jpg", filtered_image);
+    cv::Mat filtered_image;
+    cv::Mat min_image, max_image;
+
+    max_image = max_filter(grayscale_img, kernel_size);
+    cv::imwrite("results/image_max.jpg", max_image);
+    min_image = min_filter(grayscale_img, kernel_size);
+    cv::imwrite("results/image_min.jpg", min_image);
+
+    // Continue using the max filtered image
+    filtered_image = max_image;
     
     // ---------- TASK 3 ----------
     // Use median filter and Gaussian smoothing filter
