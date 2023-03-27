@@ -67,8 +67,9 @@ void on_mouse_4(int event, int x, int y, int f, void* userdata){
     int g_mean = img_mean[1];
     int r_mean = img_mean[2];
 
-    inRange(img_out, Scalar(b_mean-T, g_mean-T, r_mean-T), Scalar(b_mean+T, g_mean+T, r_mean+T), mask);
-    
+    Scalar low(b_mean-T, g_mean-T, r_mean-T), high(b_mean+T, g_mean+T, r_mean+T);
+    inRange(img_out, low, high, mask);
+
     namedWindow("Mask");
     imshow("Mask", mask);
     waitKey(0);
@@ -97,8 +98,9 @@ void on_mouse_5(int event, int x, int y, int f, void* userdata){
     int g_mean = img_mean[1];
     int r_mean = img_mean[2];
 
-    inRange(img_out, Scalar(b_mean-T, g_mean-T, r_mean-T), Scalar(b_mean+T, g_mean+T, r_mean+T), mask);
-
+    Scalar low(b_mean-T, g_mean-T, r_mean-T), high(b_mean+T, g_mean+T, r_mean+T);
+    inRange(img_out, low, high, mask);
+    
     Mat result = img_out.clone();
     result.setTo(Scalar(92, 37, 201), mask);
 
