@@ -67,18 +67,8 @@ void on_mouse_4(int event, int x, int y, int f, void* userdata){
     int g_mean = img_mean[1];
     int r_mean = img_mean[2];
 
-    for (int row = 0; row < img_out.rows; row++){
-        for (int col = 0; col < img_out.cols; col++){
-            int b = img_out.at<Vec3b>(row,col)[0];
-            int g = img_out.at<Vec3b>(row,col)[1];
-            int r = img_out.at<Vec3b>(row,col)[2];
-
-            if ((abs(b-b_mean) < T) && (abs(g-g_mean) < T) && (abs(r-r_mean) < T)){
-                mask.at<unsigned char>(row, col) = 255;
-            }
-
-        }
-    }
+    inRange(img_out, Scalar(b_mean-T, g_mean-T, r_mean-T), Scalar(b_mean+T, g_mean+T, r_mean+T), mask);
+    
     namedWindow("Mask");
     imshow("Mask", mask);
     waitKey(0);
@@ -107,18 +97,7 @@ void on_mouse_5(int event, int x, int y, int f, void* userdata){
     int g_mean = img_mean[1];
     int r_mean = img_mean[2];
 
-    for (int row = 0; row < img_out.rows; row++){
-        for (int col = 0; col < img_out.cols; col++){
-            int b = img_out.at<Vec3b>(row,col)[0];
-            int g = img_out.at<Vec3b>(row,col)[1];
-            int r = img_out.at<Vec3b>(row,col)[2];
-
-            if ((abs(b-b_mean) < T) && (abs(g-g_mean) < T) && (abs(r-r_mean) < T)){
-                mask.at<unsigned char>(row, col) = 255;
-            }
-
-        }
-    }
+    inRange(img_out, Scalar(b_mean-T, g_mean-T, r_mean-T), Scalar(b_mean+T, g_mean+T, r_mean+T), mask);
 
     Mat result = img_out.clone();
     result.setTo(Scalar(92, 37, 201), mask);
