@@ -16,7 +16,7 @@ int main(int argc, char** argv){
     }
 
     int task;
-    std::cout << "Input task to show (1/2/3/4): \n";
+    std::cout << "Input task to view (1/2/3/4/5): ";
     std::cin >> task; // Get user input from the keyboard
 
     Mat robo_img = imread(argv[1]); // Read the image given as argument in command line
@@ -32,7 +32,6 @@ int main(int argc, char** argv){
     else if (task == 4){
         setMouseCallback("Robocup", on_mouse_4, (void*)&robo_img);
     }
-    
     
     waitKey(0);
 

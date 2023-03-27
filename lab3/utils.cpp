@@ -61,12 +61,11 @@ void on_mouse_4(int event, int x, int y, int f, void* userdata){
     Rect neighborhood = Rect(x, y, neighborhood_size, neighborhood_size);
     Scalar img_mean = mean(img_out(neighborhood));
     Mat mask = Mat(img_out.rows, img_out.cols, CV_8UC1);
-    int T = 10;
+    int T = 55;
 
-    /*
-    int b_mean = mean[0]; // How to get these?
-    int g_mean = mean[1];
-    int r_mean = mean[2];
+    int b_mean = img_mean[0];
+    int g_mean = img_mean[1];
+    int r_mean = img_mean[2];
 
     for (int row = 0; row < img_out.rows; row++){
         for (int col = 0; col < img_out.cols; col++){
@@ -79,8 +78,49 @@ void on_mouse_4(int event, int x, int y, int f, void* userdata){
             }
 
         }
-    } */
+    }
     namedWindow("Mask");
     imshow("Mask", mask);
     waitKey(0);
+}
+
+void on_mouse_5(int event, int x, int y, int f, void* userdata){
+    // Task 5 callback
+    if (event != EVENT_LBUTTONDOWN){
+        return;
+    }
+
+    Mat img = *(Mat*) userdata;
+    Mat img_out = img.clone();
+    
+    int neighborhood_size = 9;
+    if (y + neighborhood_size > img_out.rows || x + neighborhood_size > img_out.cols){
+        return;
+    }
+
+    Rect neighborhood = Rect(x, y, neighborhood_size, neighborhood_size);
+    Scalar img_mean = mean(img_out(neighborhood));
+    Mat mask = Mat(img_out.rows, img_out.cols, CV_8UC1);
+    int T = 55;
+
+    int b_mean = img_mean[0];
+    int g_mean = img_mean[1];
+    int r_mean = img_mean[2];
+
+    for (int row = 0; row < img_out.rows; row++){
+        for (int col = 0; col < img_out.cols; col++){
+            int b = img_out.at<Vec3b>(row,col)[0];
+            int g = img_out.at<Vec3b>(row,col)[1];
+            int r = img_out.at<Vec3b>(row,col)[2];
+
+            if ((abs(b-b_mean) < T) && (abs(g-g_mean) < T) && (abs(r-r_mean) < T)){
+                mask.at<unsigned char>(row, col) = 255;
+            }
+
+        }
+    }
+
+    // namedWindow("Mask");
+    // imshow("Mask", mask);
+    // waitKey(0);
 }
