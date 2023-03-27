@@ -9,6 +9,9 @@
 
 using namespace cv;
 
+#define SAVE_IMAGES false
+#define T 55
+
 void on_mouse_2(int event, int x, int y, int f, void* userdata){
     // Task 2 callback
     if (event != EVENT_LBUTTONDOWN){
@@ -61,7 +64,6 @@ void on_mouse_4(int event, int x, int y, int f, void* userdata){
     Rect neighborhood = Rect(x, y, neighborhood_size, neighborhood_size);
     Scalar img_mean = mean(img_out(neighborhood));
     Mat mask = Mat(img_out.rows, img_out.cols, CV_8UC1);
-    int T = 55;
 
     int b_mean = img_mean[0];
     int g_mean = img_mean[1];
@@ -69,6 +71,10 @@ void on_mouse_4(int event, int x, int y, int f, void* userdata){
 
     Scalar low(b_mean-T, g_mean-T, r_mean-T), high(b_mean+T, g_mean+T, r_mean+T);
     inRange(img_out, low, high, mask);
+
+    if (SAVE_IMAGES) {
+        imwrite("results/mask.jpg", mask);
+    }
 
     namedWindow("Mask");
     imshow("Mask", mask);
@@ -91,18 +97,25 @@ void on_mouse_5(int event, int x, int y, int f, void* userdata){
 
     Rect neighborhood = Rect(x, y, neighborhood_size, neighborhood_size);
     Scalar img_mean = mean(img_out(neighborhood));
+
+    // Initialize mask and define threshold
     Mat mask = Mat(img_out.rows, img_out.cols, CV_8UC1);
-    int T = 60;
 
     int b_mean = img_mean[0];
     int g_mean = img_mean[1];
     int r_mean = img_mean[2];
 
+    // Create mask using the threshold
     Scalar low(b_mean-T, g_mean-T, r_mean-T), high(b_mean+T, g_mean+T, r_mean+T);
     inRange(img_out, low, high, mask);
     
+    // Set white pixels of mask to new color in result image
     Mat result = img_out.clone();
     result.setTo(Scalar(92, 37, 201), mask);
+
+    if (SAVE_IMAGES) {
+        imwrite("results/segmented.jpg", result);
+    }
 
     namedWindow("Result");
     imshow("Result", result);
