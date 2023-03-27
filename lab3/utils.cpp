@@ -19,10 +19,11 @@ void on_mouse_2(int event, int x, int y, int f, void* userdata){
     }
 
     Mat img = *(Mat*) userdata;
-    
-    int b = img.at<Vec3b>(x,y)[0];
-    int g = img.at<Vec3b>(x,y)[1];
-    int r = img.at<Vec3b>(x,y)[2];
+    Point pixel(x,y);
+
+    unsigned char b = img.at<Vec3b>(pixel)[0];
+    unsigned char g = img.at<Vec3b>(pixel)[1];
+    unsigned char r = img.at<Vec3b>(pixel)[2];
 
     std::cout << "[Task2] BGR: " << std::to_string(b) << ", " << std::to_string(g) << ", " << std::to_string(r) << "\n";
 }
