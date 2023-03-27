@@ -63,6 +63,7 @@ void on_mouse_4(int event, int x, int y, int f, void* userdata){
     Mat mask = Mat(img_out.rows, img_out.cols, CV_8UC1);
     int T = 10;
 
+    /*
     int b_mean = mean[0]; // How to get these?
     int g_mean = mean[1];
     int r_mean = mean[2];
@@ -78,7 +79,7 @@ void on_mouse_4(int event, int x, int y, int f, void* userdata){
             }
 
         }
-    }
+    } */
     namedWindow("Mask");
     imshow("Mask", mask);
     waitKey(0);
