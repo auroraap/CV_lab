@@ -10,6 +10,7 @@
 using namespace cv;
 
 void on_mouse_2(int event, int x, int y, int f, void* userdata){
+    // Task 2 callback
     if (event != EVENT_LBUTTONDOWN){
         return;
     }
@@ -24,6 +25,7 @@ void on_mouse_2(int event, int x, int y, int f, void* userdata){
 }
 
 void on_mouse_3(int event, int x, int y, int f, void* userdata){
+    // Task 3 callback
     if (event != EVENT_LBUTTONDOWN){
         return;
     }
@@ -43,6 +45,7 @@ void on_mouse_3(int event, int x, int y, int f, void* userdata){
 }
 
 void on_mouse_4(int event, int x, int y, int f, void* userdata){
+    // Task 4 callback
     if (event != EVENT_LBUTTONDOWN){
         return;
     }
@@ -60,7 +63,7 @@ void on_mouse_4(int event, int x, int y, int f, void* userdata){
     Mat mask = Mat(img_out.rows, img_out.cols, CV_8UC1);
     int T = 10;
 
-    int b_mean = mean[0];
+    int b_mean = mean[0]; // How to get these?
     int g_mean = mean[1];
     int r_mean = mean[2];
 
