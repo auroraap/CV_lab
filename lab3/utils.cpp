@@ -101,7 +101,7 @@ void on_mouse_5(int event, int x, int y, int f, void* userdata){
     Rect neighborhood = Rect(x, y, neighborhood_size, neighborhood_size);
     Scalar img_mean = mean(img_out(neighborhood));
     Mat mask = Mat(img_out.rows, img_out.cols, CV_8UC1);
-    int T = 55;
+    int T = 60;
 
     int b_mean = img_mean[0];
     int g_mean = img_mean[1];
@@ -120,7 +120,10 @@ void on_mouse_5(int event, int x, int y, int f, void* userdata){
         }
     }
 
-    // namedWindow("Mask");
-    // imshow("Mask", mask);
-    // waitKey(0);
+    Mat result = img_out.clone();
+    result.setTo(Scalar(92, 37, 201), mask);
+
+    namedWindow("Result");
+    imshow("Result", result);
+    waitKey(0);
 }

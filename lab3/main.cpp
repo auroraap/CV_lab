@@ -32,6 +32,9 @@ int main(int argc, char** argv){
     else if (task == 4){
         setMouseCallback("Robocup", on_mouse_4, (void*)&robo_img);
     }
+    else if (task == 5){
+        setMouseCallback("Robocup", on_mouse_5, (void*)&robo_img);
+    }
     
     waitKey(0);
 
