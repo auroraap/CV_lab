@@ -1,5 +1,6 @@
 // main.cpp
 
+#include <opencv2/core.hpp>
 #include <opencv2/highgui.hpp>
 #include <opencv2/imgproc.hpp>
 #include <iostream>
@@ -18,7 +19,7 @@ int main(int argc, char** argv){
     Mat robo_img = imread(argv[1]); // Read the image given as argument in command line
     namedWindow("Robocup");
     imshow("Robocup", robo_img);
-    // ---------------- Task 2 ----------------
+    // ---------------- Task 2, 3 ----------------
     setMouseCallback("Robocup", on_mouse, (void*)&robo_img);
     waitKey(0);
 
