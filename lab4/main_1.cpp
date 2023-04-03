@@ -34,9 +34,9 @@ int main ( int argc,char** argv) {
 	if(input_img.empty())
 		return 0;
 
-	output_img.create(input_img.size(),input_img.type());
+	output_img.create(input_img.rows, input_img.cols, input_img.type());
 	cv::namedWindow(window);
-	cv::createTrackbar("Threshold: ",window,&T,T_max,on_trackbar);
+	cv::createTrackbar("Threshold: ", window, &T, T_max, on_trackbar);
 	on_trackbar(0,0);
 
 	cv::waitKey(0);
