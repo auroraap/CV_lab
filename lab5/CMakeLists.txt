@@ -1,0 +1,6 @@
+cmake_minimum_required(VERSION 2.8)
+project( Lab5 )
+find_package( OpenCV REQUIRED )
+include_directories( ${OpenCV_INCLUDE_DIRS} )
+add_executable( Lab5 task1.cpp )
+target_link_libraries( Lab5 ${OpenCV_LIBS} )
