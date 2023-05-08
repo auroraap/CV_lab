@@ -12,7 +12,9 @@ using namespace cv;
 using namespace std;
 
 #define K 2
-#define MATCH_THRESHOLD 10
+#define MATCH_THRESHOLD 7
+#define ratio_thresh 0.7
+#define DET_THRESH 0.1
 
 void check_similarity(vector<DMatch> matches, vector< KeyPoint > kp1, vector< KeyPoint > kp2){
     if ( matches.size() > MATCH_THRESHOLD){
@@ -25,10 +27,13 @@ void check_similarity(vector<DMatch> matches, vector< KeyPoint > kp1, vector< Ke
                 image2_points.push_back(kp2[match.trainIdx].pt);
         }
 
-        Mat homography;
-        findHomography(image1_points, image2_points, homography);
+        Mat H;
+        H = findHomography(image1_points, image2_points, RANSAC);
+        
+        float det = determinant(H);
+        cout << "Determinant: " << det << "\n";
 
-        if (homography.empty()){
+        if (det > DET_THRESH){ // This does not work
             cout << "\tThe two images are similar.\n";
         }
         else{
@@ -44,8 +49,8 @@ int main( int argc, char** argv ){
     if (argc < 2 )
 		return 0;
 	
-	Mat img1 = imread(argv[1]);
-    Mat img2 = imread(argv[2]);
+	Mat img1 = imread(argv[1], IMREAD_GRAYSCALE);
+    Mat img2 = imread(argv[2], IMREAD_GRAYSCALE);
     string img1_name = argv[1];
     string img2_name = argv[2];
 
@@ -88,7 +93,7 @@ int main( int argc, char** argv ){
     Ptr<DescriptorMatcher> bf_matcher = DescriptorMatcher::create(DescriptorMatcher::BRUTEFORCE); // BF with L2 distance
     Ptr<DescriptorMatcher> bf_hamming_matcher = DescriptorMatcher::create(DescriptorMatcher::BRUTEFORCE_HAMMING); // BF with Hamming distance
     vector< vector<DMatch> > orb_knn_matches, sift_knn_matches, surf_knn_matches;
-    const float ratio_thresh = 0.7f;
+    
 
     // ~~~~~~ ORB matching ~~~~~~
     // Use Hamming distance on ORB since it is a binary string based descriptor
@@ -106,6 +111,7 @@ int main( int argc, char** argv ){
     drawMatches( img1, orb_kp1, img2, orb_kp2, orb_good_matches, orb_matches, Scalar::all(-1),
                  Scalar::all(-1), std::vector<char>(), DrawMatchesFlags::NOT_DRAW_SINGLE_POINTS );
     imshow("ORB Good Matches", orb_matches );
+    imwrite("ORB.jpg", orb_matches);
     
 
     // ~~~~~~ SIFT matching ~~~~~~
@@ -123,6 +129,7 @@ int main( int argc, char** argv ){
     drawMatches( img1, sift_kp1, img2, sift_kp2, sift_good_matches, sift_matches, Scalar::all(-1),
                  Scalar::all(-1), std::vector<char>(), DrawMatchesFlags::NOT_DRAW_SINGLE_POINTS );
     imshow("SIFT Good Matches", sift_matches );
+    imwrite("SIFT.jpg", sift_matches);
 
     // ~~~~~~ SURF matching ~~~~~~
     bf_matcher->knnMatch( surf_des1, surf_des2, surf_knn_matches, K );
@@ -139,11 +146,11 @@ int main( int argc, char** argv ){
     drawMatches( img1, surf_kp1, img2, surf_kp2, surf_good_matches, surf_matches, Scalar::all(-1),
                  Scalar::all(-1), std::vector<char>(), DrawMatchesFlags::NOT_DRAW_SINGLE_POINTS );
     imshow("SURF Good Matches", surf_matches );
-    waitKey(0);
-
+    imwrite("SURF.jpg", surf_matches);
+    
     // iii) Classify if
         // Similar image content
-        // Similar but strongly transformed
+        // Similar and strongly transformed
         // Dissimilar
     cout << "ORB result:\n";
     check_similarity(orb_good_matches, orb_kp1, orb_kp2);
@@ -151,5 +158,7 @@ int main( int argc, char** argv ){
     check_similarity(sift_good_matches, sift_kp1, sift_kp2);
     cout << "SURF result:\n";
     check_similarity(surf_good_matches, surf_kp1, surf_kp2);
+
+    waitKey(0);
 
 }
