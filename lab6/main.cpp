@@ -11,12 +11,15 @@
 using namespace cv;
 using namespace std;
 
-#define K 2
-#define MATCH_THRESHOLD 7
-#define ratio_thresh 0.7
-#define DET_THRESH 0.1
+const int K = 2;
+const int MATCH_THRESHOLD = 10;
+const float ORB_RATIO_THRESH = 0.85;
+const float SIFT_RATIO_THRESH = 0.75;
+const float SURF_RATIO_THRESH = 0.7;
+const float DET_THRESH = 0.1;
+const int SURF_HESSIAN_THRESH = 400;
 
-void check_similarity(vector<DMatch> matches, vector< KeyPoint > kp1, vector< KeyPoint > kp2){
+void check_similarity(vector<DMatch> matches, vector<KeyPoint> kp1, vector<KeyPoint> kp2){
     if ( matches.size() > MATCH_THRESHOLD){
         // If there are enough matches, estimate the homography matrix
         DMatch match;
@@ -31,17 +34,17 @@ void check_similarity(vector<DMatch> matches, vector< KeyPoint > kp1, vector< Ke
         H = findHomography(image1_points, image2_points, RANSAC);
         
         float det = determinant(H);
-        cout << "Determinant: " << det << "\n";
+        cout << "\tDeterminant: " << det << "\n";
 
         if (det > DET_THRESH){ // This does not work
-            cout << "\tThe two images are similar.\n";
+            cout << "\tThe image contents are similar.\n";
         }
         else{
-            cout << "\tThe two images are similar and have been processed by a strong transformation.\n";
+            cout << "\tThe image contents are processed by a strong transformation.\n";
         }
     }
     else{
-        cout << "\tThe two images are not similar.\n";
+        cout << "\tThe image contents are not similar.\n";
     }
 }
 
@@ -51,10 +54,11 @@ int main( int argc, char** argv ){
 	
 	Mat img1 = imread(argv[1], IMREAD_GRAYSCALE);
     Mat img2 = imread(argv[2], IMREAD_GRAYSCALE);
-    string img1_name = argv[1];
-    string img2_name = argv[2];
 
-    // i) Evaluate features of both images
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // ~~ i) Evaluate features of both images ~~
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
     // ~~~~~~ ORB features ~~~~~~
     Ptr<FeatureDetector> orb_detector = ORB::create();
     vector< KeyPoint > orb_kp1, orb_kp2;
@@ -78,8 +82,7 @@ int main( int argc, char** argv ){
     sift_detector->compute(img2, sift_kp2, sift_des2);
 
     // ~~~~~~ SURF features ~~~~~~
-    int hessian = 600;
-    Ptr<xfeatures2d::SURF> surf_detector = xfeatures2d::SURF::create( hessian );
+    Ptr<xfeatures2d::SURF> surf_detector = xfeatures2d::SURF::create( SURF_HESSIAN_THRESH );
     vector< KeyPoint> surf_kp1, surf_kp2;
     Mat surf_des1, surf_des2;
     // Detect keypoints
@@ -89,12 +92,13 @@ int main( int argc, char** argv ){
     surf_detector->compute(img1, surf_kp1, surf_des1);
     surf_detector->compute(img2, surf_kp2, surf_des2);
     
-    // ii) Match the features
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // ~~ ii) Match the features ~~
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     Ptr<DescriptorMatcher> bf_matcher = DescriptorMatcher::create(DescriptorMatcher::BRUTEFORCE); // BF with L2 distance
     Ptr<DescriptorMatcher> bf_hamming_matcher = DescriptorMatcher::create(DescriptorMatcher::BRUTEFORCE_HAMMING); // BF with Hamming distance
     vector< vector<DMatch> > orb_knn_matches, sift_knn_matches, surf_knn_matches;
     
-
     // ~~~~~~ ORB matching ~~~~~~
     // Use Hamming distance on ORB since it is a binary string based descriptor
     bf_hamming_matcher->knnMatch( orb_des1, orb_des2, orb_knn_matches, K );
@@ -102,7 +106,7 @@ int main( int argc, char** argv ){
     vector<DMatch> orb_good_matches;
     for (size_t i = 0; i < orb_knn_matches.size(); i++)
     {
-        if (orb_knn_matches[i][0].distance < ratio_thresh * orb_knn_matches[i][1].distance)
+        if (orb_knn_matches[i][0].distance < ORB_RATIO_THRESH * orb_knn_matches[i][1].distance)
         {
             orb_good_matches.push_back(orb_knn_matches[i][0]);
         }
@@ -120,7 +124,7 @@ int main( int argc, char** argv ){
     vector<DMatch> sift_good_matches;
     for (size_t i = 0; i < sift_knn_matches.size(); i++)
     {
-        if (sift_knn_matches[i][0].distance < ratio_thresh * sift_knn_matches[i][1].distance)
+        if (sift_knn_matches[i][0].distance < SIFT_RATIO_THRESH * sift_knn_matches[i][1].distance)
         {
             sift_good_matches.push_back(sift_knn_matches[i][0]);
         }
@@ -137,7 +141,7 @@ int main( int argc, char** argv ){
     std::vector<DMatch> surf_good_matches;
     for (size_t i = 0; i < surf_knn_matches.size(); i++)
     {
-        if (surf_knn_matches[i][0].distance < ratio_thresh * surf_knn_matches[i][1].distance)
+        if (surf_knn_matches[i][0].distance < SURF_RATIO_THRESH * surf_knn_matches[i][1].distance)
         {
             surf_good_matches.push_back(surf_knn_matches[i][0]);
         }
@@ -148,10 +152,12 @@ int main( int argc, char** argv ){
     imshow("SURF Good Matches", surf_matches );
     imwrite("SURF.jpg", surf_matches);
     
-    // iii) Classify if
-        // Similar image content
-        // Similar and strongly transformed
-        // Dissimilar
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // ~~ iii) Classify if                   ~~
+    // ~~   Similar image content            ~~
+    // ~~   Similar and strongly transformed ~~
+    // ~~   Dissimilar                       ~~
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     cout << "ORB result:\n";
     check_similarity(orb_good_matches, orb_kp1, orb_kp2);
     cout << "SIFT result:\n";
