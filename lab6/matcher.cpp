@@ -22,7 +22,6 @@ class Matcher {
         void buildDescriptor(Mat img1, Mat img2, vector< KeyPoint>* kp1,  vector< KeyPoint>* kp2, Mat* des1, Mat* des2);
         void checkSimilarity( vector<DMatch> good_matches , vector< KeyPoint> kp1, vector< KeyPoint> kp2 );
         vector<DMatch> matchKeypoints(Mat des1, Mat des2);
-        Mat drawResult(Mat img1, Mat img2, vector< KeyPoint> kp1, vector< KeyPoint> kp2, vector<DMatch> matches);
 };
 
 void Matcher::setVars(int match_th, float ratio_th, int k, float determinant_th){
@@ -91,11 +90,3 @@ void Matcher::checkSimilarity( vector<DMatch> good_matches , vector< KeyPoint> k
         cout << "\tThe image contents are not similar.\n";
     }
 }
-
-
-Mat Matcher::drawResult(Mat img1, Mat img2, vector< KeyPoint> kp1, vector< KeyPoint> kp2, vector<DMatch> matches){
-    Mat visualized;
-    drawMatches(img1, kp1, img2, kp2, matches, visualized);
-    return visualized;
-}
-    

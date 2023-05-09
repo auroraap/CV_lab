@@ -20,6 +20,8 @@ const float SURF_RATIO_THRESH = 0.8;
 const float DET_THRESH = 0.1;
 const int SURF_HESSIAN_THRESH = 400;
 
+const bool SAVE_IMAGES = true;
+
 int main( int argc, char** argv ){
     if (argc < 2 ){
         cout << "Make sure to include two image names in the command line.\n";
@@ -70,14 +72,19 @@ int main( int argc, char** argv ){
     vector<DMatch> orb_matches = orb.matchKeypoints(orb_des1, orb_des2);
     orb.checkSimilarity(orb_matches, orb_kp1, orb_kp2);
 
-    Mat sift_result = sift.drawResult(img1, img2, sift_kp1, sift_kp2, sift_matches);
-    Mat surf_result = surf.drawResult(img1, img2, surf_kp1, surf_kp2, surf_matches);
-    Mat orb_result = orb.drawResult(img1, img2, orb_kp1, orb_kp2, orb_matches);
-    imwrite("SIFT.jpg", sift_result);
+    Mat sift_result, surf_result, orb_result;
+    drawMatches(img1, sift_kp1, img2, sift_kp2, sift_matches, sift_result);
+    drawMatches(img1, surf_kp1, img2, surf_kp2, surf_matches, surf_result);
+    drawMatches(img1, orb_kp1, img2, orb_kp2, orb_matches, orb_result);
+
+    if ( SAVE_IMAGES ) {
+        imwrite("SIFT.jpg", sift_result);
+        imwrite("SURF.jpg", surf_result);
+        imwrite("ORB.jpg", orb_result);
+    }
+
     imshow("SIFT", sift_result);
-    imwrite("SURF.jpg", surf_result);
     imshow("SURF", surf_result);
-    imwrite("ORB.jpg", orb_result);
     imshow("ORB", orb_result);
     waitKey(0);
     

@@ -22,5 +22,4 @@ class Matcher {
         void buildDescriptor(Mat img1, Mat img2, vector< KeyPoint>* kp1,  vector< KeyPoint>* kp2, Mat* des1, Mat* des2);
         void checkSimilarity( vector<DMatch> good_matches , vector< KeyPoint> kp1, vector< KeyPoint> kp2 );
         vector<DMatch> matchKeypoints(Mat des1, Mat des2);
-        Mat drawResult(Mat img1, Mat img2, vector< KeyPoint> kp1, vector< KeyPoint> kp2, vector<DMatch> matches);
 };
