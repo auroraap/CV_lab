@@ -29,7 +29,8 @@ int main( ){
 
     Stitcher stitcher = Stitcher("resources/Images/kithcen", "bmp", 66, sift);
     vector< Mat > images = stitcher.extractImagesOrdered();
-    vector< Mat > homographyMatrices = stitcher.getImageTranslation(images);
+    vector< Mat > projImages = stitcher.projectImagesCylinder(images);
+    vector< Mat > homographyMatrices = stitcher.getImageTranslation(projImages);
 
     return 0;
 }

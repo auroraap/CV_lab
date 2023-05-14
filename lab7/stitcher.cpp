@@ -26,6 +26,7 @@ class Stitcher {
             matcher = m;
         };
         vector< Mat > extractImagesOrdered();
+        vector< Mat > projectImagesCylinder(vector< Mat > images);
         vector< Mat > getImageTranslation(vector< Mat > images);
 };
 
@@ -40,6 +41,15 @@ vector< Mat > Stitcher::extractImagesOrdered(){
     }
         
     return imageVec;
+}
+
+vector< Mat > Stitcher::projectImagesCylinder(vector< Mat > images) {
+    vector< Mat > projectedImages;
+    for (int i = 0; i < images.size(); i++) {
+        Mat proj = cylindricalProj(images[i], camAngle);
+        projectedImages.push_back(proj);
+    }
+    return projectedImages;
 }
 
 vector< Mat > getImageTranslation(vector< Mat > images, Matcher matcher){

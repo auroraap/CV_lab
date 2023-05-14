@@ -26,5 +26,6 @@ class Stitcher {
             matcher = m;
         };
         vector< Mat > extractImagesOrdered();
+        vector< Mat > projectImagesCylinder(vector< Mat > images);
         vector< Mat > getImageTranslation(vector< Mat > images);
 };
