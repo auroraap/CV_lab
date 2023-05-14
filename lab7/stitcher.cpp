@@ -52,7 +52,7 @@ vector< Mat > Stitcher::projectImagesCylinder(vector< Mat > images) {
     return projectedImages;
 }
 
-vector< Mat > getImageTranslation(vector< Mat > images, Matcher matcher){
+vector< Mat > Stitcher::getImageTranslation(vector< Mat > images){
     vector< Mat > H_vec;
 
     for (int i = 0; i < images.size() - 1; i++){ // Iterate over all pairs

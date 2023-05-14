@@ -6,23 +6,25 @@
 #include <opencv2/calib3d.hpp>
 #include <iostream>
 
+#include "matcher.h"
+
 using namespace cv;
 using namespace std;
 
-class Matcher {
-    private:
-        int match_threshold;
-        float ratio_threshold;
-        int K;
-        float determinant_threshold;
-    public:
-        Ptr<FeatureDetector> detector;
-        Ptr<DescriptorMatcher> matcher;
-        void setVars(int match_threshold, float ratio_threshold, int K, float determinant_th);
-        void buildDescriptor(Mat img1, Mat img2, vector< KeyPoint>* kp1,  vector< KeyPoint>* kp2, Mat* des1, Mat* des2);
-        void checkSimilarity( vector<DMatch> good_matches , vector< KeyPoint> kp1, vector< KeyPoint> kp2 );
-        vector<DMatch> matchKeypoints(Mat des1, Mat des2);
-};
+// class Matcher {
+//     private:
+//         int match_threshold;
+//         float ratio_threshold;
+//         int K;
+//         float determinant_threshold;
+//     public:
+//         Ptr<FeatureDetector> detector;
+//         Ptr<DescriptorMatcher> matcher;
+//         void setVars(int match_threshold, float ratio_threshold, int K, float determinant_th);
+//         void buildDescriptor(Mat img1, Mat img2, vector< KeyPoint>* kp1,  vector< KeyPoint>* kp2, Mat* des1, Mat* des2);
+//         void checkSimilarity( vector<DMatch> good_matches , vector< KeyPoint> kp1, vector< KeyPoint> kp2 );
+//         vector<DMatch> matchKeypoints(Mat des1, Mat des2);
+// };
 
 void Matcher::setVars(int match_th, float ratio_th, int k, float determinant_th){
     match_threshold = match_th;
